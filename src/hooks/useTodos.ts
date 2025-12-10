@@ -10,7 +10,7 @@ export function useTodos() {
       const parsed = JSON.parse(stored);
       return parsed.map((todo: Todo) => ({
         ...todo,
-        category: todo.category || 'other',
+        category: todo.category || 'personal',
         createdAt: new Date(todo.createdAt),
         dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
       }));
@@ -22,7 +22,7 @@ export function useTodos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  const addTodo = (title: string, priority: Priority = 'medium', category: Category = 'other', dueDate?: Date) => {
+  const addTodo = (title: string, priority: Priority = 'medium', category: Category = 'personal', dueDate?: Date) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
       title: title.trim(),
