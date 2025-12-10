@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Todo, FilterType, Category } from '@/types/todo';
 import { TodoItem } from './TodoItem';
-import { ClipboardList } from 'lucide-react';
+import { Heart, Sparkles } from 'lucide-react';
 
 interface TodoListProps {
   todos: Todo[];
@@ -16,7 +16,6 @@ export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, on
   const filteredTodos = useMemo(() => {
     let result = todos;
     
-    // Filter by status
     switch (filter) {
       case 'active':
         result = result.filter(t => !t.completed);
@@ -26,7 +25,6 @@ export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, on
         break;
     }
     
-    // Filter by category
     if (categoryFilter) {
       result = result.filter(t => t.category === categoryFilter);
     }
@@ -37,20 +35,25 @@ export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, on
   if (filteredTodos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="p-4 rounded-full bg-muted/50 mb-4">
-          <ClipboardList className="h-12 w-12 text-muted-foreground/50" />
+        <div className="relative p-6 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 mb-6">
+          <Heart className="h-16 w-16 text-primary/40" />
+          <Sparkles className="absolute top-2 right-2 h-6 w-6 text-accent-foreground animate-pulse" />
         </div>
-        <h3 className="text-lg font-medium text-muted-foreground mb-1">
+        <h3 className="text-xl font-serif font-semibold text-foreground/80 mb-2">
           {categoryFilter 
-            ? 'No tasks in this category' 
+            ? 'No tasks here yet' 
             : filter === 'all' 
-              ? 'No tasks yet' 
+              ? 'Your task list is empty' 
               : filter === 'active' 
-                ? 'No active tasks' 
+                ? 'Nothing to do!' 
                 : 'No completed tasks'}
         </h3>
-        <p className="text-sm text-muted-foreground/70">
-          {filter === 'all' && !categoryFilter ? 'Add your first task to get started!' : 'Keep going, you\'re doing great!'}
+        <p className="text-muted-foreground max-w-xs">
+          {filter === 'all' && !categoryFilter 
+            ? '✨ Add your first task and start your productive day!' 
+            : filter === 'completed' 
+              ? '💪 Complete some tasks to see them here' 
+              : '🎉 Great job! Time to add more goals'}
         </p>
       </div>
     );
@@ -58,14 +61,19 @@ export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, on
 
   return (
     <div className="space-y-3">
-      {filteredTodos.map(todo => (
-        <TodoItem
+      {filteredTodos.map((todo, index) => (
+        <div
           key={todo.id}
-          todo={todo}
-          onToggle={onToggle}
-          onDelete={onDelete}
-          onUpdate={onUpdate}
-        />
+          className="animate-fade-in"
+          style={{ animationDelay: `${index * 50}ms` }}
+        >
+          <TodoItem
+            todo={todo}
+            onToggle={onToggle}
+            onDelete={onDelete}
+            onUpdate={onUpdate}
+          />
+        </div>
       ))}
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Trash2, Flag, Calendar, Pencil, X, Tag } from 'lucide-react';
+import { Check, Trash2, Calendar, Pencil, X, Heart } from 'lucide-react';
 import { Todo, Priority, categoryConfig } from '@/types/todo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,10 +13,10 @@ interface TodoItemProps {
   onUpdate: (id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>) => void;
 }
 
-const priorityConfig: Record<Priority, { bg: string; text: string }> = {
-  low: { bg: 'bg-chart-5/10', text: 'text-chart-5' },
-  medium: { bg: 'bg-chart-1/10', text: 'text-chart-1' },
-  high: { bg: 'bg-destructive/10', text: 'text-destructive' },
+const priorityConfig: Record<Priority, { bg: string; text: string; emoji: string }> = {
+  low: { bg: 'bg-chart-4/10', text: 'text-chart-4', emoji: '🌱' },
+  medium: { bg: 'bg-chart-5/10', text: 'text-chart-5', emoji: '⭐' },
+  high: { bg: 'bg-primary/10', text: 'text-primary', emoji: '🔥' },
 };
 
 export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) {
@@ -37,10 +37,10 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
 
   const getDueDateStatus = () => {
     if (!todo.dueDate) return null;
-    if (todo.completed) return { color: 'text-muted-foreground', label: format(todo.dueDate, 'MMM d') };
-    if (isToday(todo.dueDate)) return { color: 'text-chart-1', label: 'Today' };
-    if (isPast(todo.dueDate)) return { color: 'text-destructive', label: 'Overdue' };
-    return { color: 'text-muted-foreground', label: format(todo.dueDate, 'MMM d') };
+    if (todo.completed) return { color: 'text-muted-foreground', label: format(todo.dueDate, 'MMM d'), emoji: '📅' };
+    if (isToday(todo.dueDate)) return { color: 'text-chart-5', label: 'Today', emoji: '🌟' };
+    if (isPast(todo.dueDate)) return { color: 'text-destructive', label: 'Overdue', emoji: '⚠️' };
+    return { color: 'text-muted-foreground', label: format(todo.dueDate, 'MMM d'), emoji: '📅' };
   };
 
   const dueDateStatus = getDueDateStatus();
@@ -49,19 +49,20 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
   return (
     <div
       className={cn(
-        'group flex items-center gap-3 p-4 rounded-xl bg-card border border-border/50 transition-all duration-200',
-        'hover:shadow-md hover:border-border',
-        todo.completed && 'opacity-60'
+        'group relative flex items-start gap-4 p-5 rounded-2xl bg-card border border-border/30 transition-all duration-300',
+        'hover:shadow-lg hover:border-primary/20 hover:-translate-y-0.5',
+        todo.completed && 'opacity-60 bg-muted/30'
       )}
     >
       <button
         onClick={() => onToggle(todo.id)}
         className={cn(
-          'shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all',
+          'shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all mt-0.5',
           todo.completed
-            ? 'bg-primary border-primary'
-            : 'border-muted-foreground/30 hover:border-primary'
+            ? 'border-primary'
+            : 'border-muted-foreground/30 hover:border-primary hover:scale-110'
         )}
+        style={todo.completed ? { background: 'var(--gradient-primary)' } : {}}
       >
         {todo.completed && <Check className="h-4 w-4 text-primary-foreground" />}
       </button>
@@ -72,17 +73,17 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
             <Input
               value={editTitle}
               onChange={e => setEditTitle(e.target.value)}
-              className="h-8 text-base"
+              className="h-10 text-base rounded-xl"
               autoFocus
               onKeyDown={e => {
                 if (e.key === 'Enter') handleSave();
                 if (e.key === 'Escape') handleCancel();
               }}
             />
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleSave}>
-              <Check className="h-4 w-4" />
+            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl" onClick={handleSave}>
+              <Check className="h-4 w-4 text-primary" />
             </Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleCancel}>
+            <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl" onClick={handleCancel}>
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -90,36 +91,36 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
           <>
             <p
               className={cn(
-                'text-base font-medium truncate transition-all',
+                'text-base font-medium leading-relaxed transition-all',
                 todo.completed && 'line-through text-muted-foreground'
               )}
             >
               {todo.title}
             </p>
-            <div className="flex flex-wrap items-center gap-2 mt-1">
+            <div className="flex flex-wrap items-center gap-2 mt-3">
               <span
                 className={cn(
-                  'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full',
+                  'inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-medium',
                   catConfig.bg,
                   catConfig.color
                 )}
               >
-                <Tag className="h-3 w-3" />
+                <span>{catConfig.emoji}</span>
                 {catConfig.label}
               </span>
               <span
                 className={cn(
-                  'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full',
+                  'inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full',
                   priorityConfig[todo.priority].bg,
                   priorityConfig[todo.priority].text
                 )}
               >
-                <Flag className="h-3 w-3" />
+                <span>{priorityConfig[todo.priority].emoji}</span>
                 {todo.priority}
               </span>
               {dueDateStatus && (
-                <span className={cn('inline-flex items-center gap-1 text-xs', dueDateStatus.color)}>
-                  <Calendar className="h-3 w-3" />
+                <span className={cn('inline-flex items-center gap-1.5 text-xs', dueDateStatus.color)}>
+                  <span>{dueDateStatus.emoji}</span>
                   {dueDateStatus.label}
                 </span>
               )}
@@ -129,11 +130,11 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
       </div>
 
       {!isEditing && (
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-9 w-9 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
             onClick={() => setIsEditing(true)}
           >
             <Pencil className="h-4 w-4" />
@@ -141,7 +142,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            className="h-9 w-9 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
             onClick={() => onDelete(todo.id)}
           >
             <Trash2 className="h-4 w-4" />

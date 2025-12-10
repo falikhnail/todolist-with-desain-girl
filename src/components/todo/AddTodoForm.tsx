@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Calendar, Flag, Tag } from 'lucide-react';
+import { Plus, Calendar, Heart, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -13,9 +13,9 @@ interface AddTodoFormProps {
 }
 
 const priorityConfig = {
-  low: { label: 'Low', color: 'text-chart-5' },
-  medium: { label: 'Medium', color: 'text-chart-1' },
-  high: { label: 'High', color: 'text-destructive' },
+  low: { label: 'Low', color: 'text-chart-4', emoji: '🌱' },
+  medium: { label: 'Medium', color: 'text-chart-5', emoji: '⭐' },
+  high: { label: 'High', color: 'text-primary', emoji: '🔥' },
 };
 
 export function AddTodoForm({ onAdd }: AddTodoFormProps) {
@@ -25,6 +25,7 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
   const [dueDate, setDueDate] = useState<Date | undefined>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isPriorityOpen, setIsPriorityOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,55 +37,40 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
     }
   };
 
-  const cyclePriority = () => {
-    const priorities: Priority[] = ['low', 'medium', 'high'];
-    const currentIndex = priorities.indexOf(priority);
-    setPriority(priorities[(currentIndex + 1) % 3]);
-  };
-
   const categories = Object.entries(categoryConfig) as [Category, typeof categoryConfig[Category]][];
+  const priorities = Object.entries(priorityConfig) as [Priority, typeof priorityConfig[Priority]][];
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
+    <form onSubmit={handleSubmit} className="mb-8">
+      <div className="relative">
+        <div className="flex flex-col gap-4">
+          <div className="relative">
+            <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/50" />
             <Input
               type="text"
-              placeholder="What needs to be done?"
+              placeholder="What would you like to accomplish today?"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="h-12 pl-4 pr-4 text-base bg-card border-border focus:ring-2 focus:ring-primary/20"
+              className="h-14 pl-12 pr-4 text-base bg-card border-border/50 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 rounded-2xl shadow-sm placeholder:text-muted-foreground/60"
             />
           </div>
           
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-12 w-12 shrink-0"
-              onClick={cyclePriority}
-              title={`Priority: ${priorityConfig[priority].label}`}
-            >
-              <Flag className={cn('h-5 w-5', priorityConfig[priority].color)} />
-            </Button>
-
+          <div className="flex flex-wrap gap-2 items-center">
             <Popover open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
               <PopoverTrigger asChild>
                 <Button
                   type="button"
                   variant="outline"
                   className={cn(
-                    'h-12 shrink-0 gap-2',
+                    'h-10 gap-2 rounded-full border-border/50 hover:bg-secondary/50',
                     categoryConfig[category].color
                   )}
                 >
-                  <Tag className="h-5 w-5" />
+                  <span>{categoryConfig[category].emoji}</span>
                   <span className="hidden sm:inline">{categoryConfig[category].label}</span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-2" align="end">
+              <PopoverContent className="w-56 p-2 rounded-2xl" align="start">
                 <div className="space-y-1">
                   {categories.map(([key, config]) => (
                     <button
@@ -95,13 +81,48 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
                         setIsCategoryOpen(false);
                       }}
                       className={cn(
-                        'w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors',
-                        'hover:bg-muted',
+                        'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all',
+                        'hover:bg-muted/70',
                         category === key && 'bg-muted'
                       )}
                     >
-                      <span className={cn('w-3 h-3 rounded-full', config.bg, config.color)} />
-                      <span>{config.label}</span>
+                      <span className="text-lg">{config.emoji}</span>
+                      <span className="font-medium">{config.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Popover open={isPriorityOpen} onOpenChange={setIsPriorityOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 gap-2 rounded-full border-border/50 hover:bg-secondary/50"
+                >
+                  <span>{priorityConfig[priority].emoji}</span>
+                  <span className="hidden sm:inline">{priorityConfig[priority].label}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-44 p-2 rounded-2xl" align="start">
+                <div className="space-y-1">
+                  {priorities.map(([key, config]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => {
+                        setPriority(key);
+                        setIsPriorityOpen(false);
+                      }}
+                      className={cn(
+                        'w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all',
+                        'hover:bg-muted/70',
+                        priority === key && 'bg-muted'
+                      )}
+                    >
+                      <span className="text-lg">{config.emoji}</span>
+                      <span className="font-medium">{config.label}</span>
                     </button>
                   ))}
                 </div>
@@ -114,17 +135,17 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
                   type="button"
                   variant="outline"
                   className={cn(
-                    'h-12 shrink-0 gap-2',
+                    'h-10 gap-2 rounded-full border-border/50 hover:bg-secondary/50',
                     dueDate ? 'text-primary' : 'text-muted-foreground'
                   )}
                 >
-                  <Calendar className="h-5 w-5" />
+                  <Calendar className="h-4 w-4" />
                   <span className="hidden sm:inline">
-                    {dueDate ? format(dueDate, 'MMM d') : 'Due'}
+                    {dueDate ? format(dueDate, 'MMM d') : 'Due date'}
                   </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
+              <PopoverContent className="w-auto p-0 rounded-2xl" align="start">
                 <CalendarComponent
                   mode="single"
                   selected={dueDate}
@@ -133,17 +154,19 @@ export function AddTodoForm({ onAdd }: AddTodoFormProps) {
                     setIsCalendarOpen(false);
                   }}
                   initialFocus
+                  className="pointer-events-auto rounded-2xl"
                 />
               </PopoverContent>
             </Popover>
 
             <Button
               type="submit"
-              className="h-12 px-6 gap-2"
+              className="h-10 px-6 gap-2 rounded-full ml-auto shadow-sm glow-effect"
+              style={{ background: 'var(--gradient-primary)' }}
               disabled={!title.trim()}
             >
               <Plus className="h-5 w-5" />
-              <span className="hidden sm:inline">Add</span>
+              <span>Add Task</span>
             </Button>
           </div>
         </div>
