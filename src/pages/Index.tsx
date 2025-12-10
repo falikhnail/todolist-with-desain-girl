@@ -4,11 +4,12 @@ import { TodoHeader } from '@/components/todo/TodoHeader';
 import { AddTodoForm } from '@/components/todo/AddTodoForm';
 import { TodoFilters } from '@/components/todo/TodoFilters';
 import { TodoList } from '@/components/todo/TodoList';
-import { FilterType } from '@/types/todo';
+import { FilterType, Category } from '@/types/todo';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   const [filter, setFilter] = useState<FilterType>('all');
+  const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
   const {
     todos,
     addTodo,
@@ -37,6 +38,8 @@ const Index = () => {
             <TodoFilters
               filter={filter}
               onFilterChange={setFilter}
+              categoryFilter={categoryFilter}
+              onCategoryFilterChange={setCategoryFilter}
               onClearCompleted={clearCompleted}
               hasCompleted={completedCount > 0}
             />
@@ -44,6 +47,7 @@ const Index = () => {
             <TodoList
               todos={todos}
               filter={filter}
+              categoryFilter={categoryFilter}
               onToggle={toggleTodo}
               onDelete={deleteTodo}
               onUpdate={updateTodo}
@@ -51,7 +55,7 @@ const Index = () => {
           </main>
           
           <footer className="mt-8 text-center text-sm text-muted-foreground">
-            <p>Double-tap a task to edit • Swipe or hover to delete</p>
+            <p>Click a task to edit • Hover to delete</p>
           </footer>
         </div>
       </div>

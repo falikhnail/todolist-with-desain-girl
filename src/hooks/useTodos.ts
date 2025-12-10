@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Todo, Priority } from '@/types/todo';
+import { Todo, Priority, Category } from '@/types/todo';
 
 const STORAGE_KEY = 'taskflow-todos';
 
@@ -10,6 +10,7 @@ export function useTodos() {
       const parsed = JSON.parse(stored);
       return parsed.map((todo: Todo) => ({
         ...todo,
+        category: todo.category || 'other',
         createdAt: new Date(todo.createdAt),
         dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
       }));
@@ -21,12 +22,13 @@ export function useTodos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  const addTodo = (title: string, priority: Priority = 'medium', dueDate?: Date) => {
+  const addTodo = (title: string, priority: Priority = 'medium', category: Category = 'other', dueDate?: Date) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
       title: title.trim(),
       completed: false,
       priority,
+      category,
       createdAt: new Date(),
       dueDate,
     };
