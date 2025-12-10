@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Check, Trash2, Flag, Calendar, Pencil, X } from 'lucide-react';
-import { Todo, Priority } from '@/types/todo';
+import { Check, Trash2, Flag, Calendar, Pencil, X, Tag } from 'lucide-react';
+import { Todo, Priority, categoryConfig } from '@/types/todo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -44,6 +44,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
   };
 
   const dueDateStatus = getDueDateStatus();
+  const catConfig = categoryConfig[todo.category];
 
   return (
     <div
@@ -95,7 +96,17 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate }: TodoItemProps) 
             >
               {todo.title}
             </p>
-            <div className="flex items-center gap-3 mt-1">
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full',
+                  catConfig.bg,
+                  catConfig.color
+                )}
+              >
+                <Tag className="h-3 w-3" />
+                {catConfig.label}
+              </span>
               <span
                 className={cn(
                   'inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full',

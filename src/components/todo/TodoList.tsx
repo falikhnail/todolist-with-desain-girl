@@ -1,27 +1,38 @@
 import { useMemo } from 'react';
-import { Todo, FilterType } from '@/types/todo';
+import { Todo, FilterType, Category } from '@/types/todo';
 import { TodoItem } from './TodoItem';
 import { ClipboardList } from 'lucide-react';
 
 interface TodoListProps {
   todos: Todo[];
   filter: FilterType;
+  categoryFilter: Category | null;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>) => void;
 }
 
-export function TodoList({ todos, filter, onToggle, onDelete, onUpdate }: TodoListProps) {
+export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, onUpdate }: TodoListProps) {
   const filteredTodos = useMemo(() => {
+    let result = todos;
+    
+    // Filter by status
     switch (filter) {
       case 'active':
-        return todos.filter(t => !t.completed);
+        result = result.filter(t => !t.completed);
+        break;
       case 'completed':
-        return todos.filter(t => t.completed);
-      default:
-        return todos;
+        result = result.filter(t => t.completed);
+        break;
     }
-  }, [todos, filter]);
+    
+    // Filter by category
+    if (categoryFilter) {
+      result = result.filter(t => t.category === categoryFilter);
+    }
+    
+    return result;
+  }, [todos, filter, categoryFilter]);
 
   if (filteredTodos.length === 0) {
     return (
@@ -30,10 +41,16 @@ export function TodoList({ todos, filter, onToggle, onDelete, onUpdate }: TodoLi
           <ClipboardList className="h-12 w-12 text-muted-foreground/50" />
         </div>
         <h3 className="text-lg font-medium text-muted-foreground mb-1">
-          {filter === 'all' ? 'No tasks yet' : filter === 'active' ? 'No active tasks' : 'No completed tasks'}
+          {categoryFilter 
+            ? 'No tasks in this category' 
+            : filter === 'all' 
+              ? 'No tasks yet' 
+              : filter === 'active' 
+                ? 'No active tasks' 
+                : 'No completed tasks'}
         </h3>
         <p className="text-sm text-muted-foreground/70">
-          {filter === 'all' ? 'Add your first task to get started!' : 'Keep going, you\'re doing great!'}
+          {filter === 'all' && !categoryFilter ? 'Add your first task to get started!' : 'Keep going, you\'re doing great!'}
         </p>
       </div>
     );
