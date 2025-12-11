@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { format, isPast, isToday } from 'date-fns';
-import { useCompletionSound } from '@/hooks/useCompletionSound';
+import { useCompletionEffects } from '@/hooks/useCompletionEffects';
 
 interface TodoItemProps {
   todo: Todo;
@@ -29,11 +29,11 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
   const [showSubtasks, setShowSubtasks] = useState(true);
   const [newSubtask, setNewSubtask] = useState('');
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
-  const { playCompletionSound } = useCompletionSound();
+  const { celebrate, playCompletionSound } = useCompletionEffects();
 
   const handleToggle = () => {
     if (!todo.completed) {
-      playCompletionSound();
+      celebrate();
     }
     onToggle(todo.id);
   };
