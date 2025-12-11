@@ -75,7 +75,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
   };
 
   const dueDateStatus = getDueDateStatus();
-  const catConfig = categoryConfig[todo.category];
+  const catConfig = categoryConfig[todo.category] || { label: todo.category, emoji: '📌', color: 'text-muted-foreground', bg: 'bg-muted' };
   const completedSubtasks = todo.subtasks.filter(st => st.completed).length;
   const hasSubtasks = todo.subtasks.length > 0;
 
