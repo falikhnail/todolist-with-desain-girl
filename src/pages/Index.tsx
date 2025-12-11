@@ -4,9 +4,11 @@ import { TodoHeader } from '@/components/todo/TodoHeader';
 import { AddTodoForm } from '@/components/todo/AddTodoForm';
 import { TodoFilters } from '@/components/todo/TodoFilters';
 import { TodoList } from '@/components/todo/TodoList';
+import { StatsDashboard } from '@/components/todo/StatsDashboard';
 import { FilterType, Category } from '@/types/todo';
 import { Helmet } from 'react-helmet-async';
-import { Heart } from 'lucide-react';
+import { Heart, BarChart3, ListTodo } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Index = () => {
   const [filter, setFilter] = useState<FilterType>('all');
@@ -44,28 +46,47 @@ const Index = () => {
           <TodoHeader activeCount={activeCount} completedCount={completedCount} />
           
           <main className="glass-card rounded-3xl p-5 md:p-8">
-            <AddTodoForm onAdd={addTodo} />
-            
-            <TodoFilters
-              filter={filter}
-              onFilterChange={setFilter}
-              categoryFilter={categoryFilter}
-              onCategoryFilterChange={setCategoryFilter}
-              onClearCompleted={clearCompleted}
-              hasCompleted={completedCount > 0}
-            />
-            
-            <TodoList
-              todos={todos}
-              filter={filter}
-              categoryFilter={categoryFilter}
-              onToggle={toggleTodo}
-              onDelete={deleteTodo}
-              onUpdate={updateTodo}
-              onAddSubtask={addSubtask}
-              onToggleSubtask={toggleSubtask}
-              onDeleteSubtask={deleteSubtask}
-            />
+            <Tabs defaultValue="tasks" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="tasks" className="flex items-center gap-2">
+                  <ListTodo className="h-4 w-4" />
+                  Tasks
+                </TabsTrigger>
+                <TabsTrigger value="stats" className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  Statistik
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="tasks" className="mt-0">
+                <AddTodoForm onAdd={addTodo} />
+                
+                <TodoFilters
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  categoryFilter={categoryFilter}
+                  onCategoryFilterChange={setCategoryFilter}
+                  onClearCompleted={clearCompleted}
+                  hasCompleted={completedCount > 0}
+                />
+                
+                <TodoList
+                  todos={todos}
+                  filter={filter}
+                  categoryFilter={categoryFilter}
+                  onToggle={toggleTodo}
+                  onDelete={deleteTodo}
+                  onUpdate={updateTodo}
+                  onAddSubtask={addSubtask}
+                  onToggleSubtask={toggleSubtask}
+                  onDeleteSubtask={deleteSubtask}
+                />
+              </TabsContent>
+              
+              <TabsContent value="stats" className="mt-0">
+                <StatsDashboard todos={todos} />
+              </TabsContent>
+            </Tabs>
           </main>
           
           <footer className="mt-8 text-center">
