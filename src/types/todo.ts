@@ -2,6 +2,12 @@ export type Priority = 'low' | 'medium' | 'high';
 
 export type Category = 'work' | 'personal' | 'shopping' | 'health' | 'selfcare' | 'goals';
 
+export interface SubTask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
 export interface Todo {
   id: string;
   title: string;
@@ -10,6 +16,7 @@ export interface Todo {
   category: Category;
   createdAt: Date;
   dueDate?: Date;
+  subtasks: SubTask[];
 }
 
 export type FilterType = 'all' | 'active' | 'completed';

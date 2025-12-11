@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Todo, Priority, Category } from '@/types/todo';
+import { Todo, Priority, Category, SubTask } from '@/types/todo';
 
 const STORAGE_KEY = 'taskflow-todos';
 
@@ -11,6 +11,7 @@ export function useTodos() {
       return parsed.map((todo: Todo) => ({
         ...todo,
         category: todo.category || 'personal',
+        subtasks: todo.subtasks || [],
         createdAt: new Date(todo.createdAt),
         dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
       }));
@@ -31,6 +32,7 @@ export function useTodos() {
       category,
       createdAt: new Date(),
       dueDate,
+      subtasks: [],
     };
     setTodos(prev => [newTodo, ...prev]);
   };
@@ -55,6 +57,46 @@ export function useTodos() {
     );
   };
 
+  const addSubtask = (todoId: string, title: string) => {
+    const newSubtask: SubTask = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      completed: false,
+    };
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === todoId
+          ? { ...todo, subtasks: [...todo.subtasks, newSubtask] }
+          : todo
+      )
+    );
+  };
+
+  const toggleSubtask = (todoId: string, subtaskId: string) => {
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === todoId
+          ? {
+              ...todo,
+              subtasks: todo.subtasks.map(st =>
+                st.id === subtaskId ? { ...st, completed: !st.completed } : st
+              ),
+            }
+          : todo
+      )
+    );
+  };
+
+  const deleteSubtask = (todoId: string, subtaskId: string) => {
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === todoId
+          ? { ...todo, subtasks: todo.subtasks.filter(st => st.id !== subtaskId) }
+          : todo
+      )
+    );
+  };
+
   const clearCompleted = () => {
     setTodos(prev => prev.filter(todo => !todo.completed));
   };
@@ -68,6 +110,9 @@ export function useTodos() {
     toggleTodo,
     deleteTodo,
     updateTodo,
+    addSubtask,
+    toggleSubtask,
+    deleteSubtask,
     clearCompleted,
     completedCount,
     activeCount,
