@@ -1,11 +1,11 @@
 import { useCallback, useRef } from 'react';
+import confetti from 'canvas-confetti';
 
-export const useCompletionSound = () => {
+export const useCompletionEffects = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const playCompletionSound = useCallback(() => {
     try {
-      // Create audio context on demand (browser requirement)
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
@@ -17,14 +17,12 @@ export const useCompletionSound = () => {
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
       
-      // Pleasant "ding" sound - ascending notes
-      oscillator.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-      oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-      oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+      oscillator.frequency.setValueAtTime(523.25, ctx.currentTime);
+      oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+      oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
       
       oscillator.type = 'sine';
       
-      // Soft envelope
       gainNode.gain.setValueAtTime(0, ctx.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
       gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.15);
@@ -37,5 +35,22 @@ export const useCompletionSound = () => {
     }
   }, []);
 
-  return { playCompletionSound };
+  const triggerConfetti = useCallback(() => {
+    // Pink/rose themed confetti
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.7 },
+      colors: ['#ec4899', '#f472b6', '#f9a8d4', '#fce7f3', '#fbbf24', '#a78bfa'],
+      shapes: ['circle', 'star'],
+      scalar: 1.2,
+    });
+  }, []);
+
+  const celebrate = useCallback(() => {
+    playCompletionSound();
+    triggerConfetti();
+  }, [playCompletionSound, triggerConfetti]);
+
+  return { celebrate, playCompletionSound, triggerConfetti };
 };
