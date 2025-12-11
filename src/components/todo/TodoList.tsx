@@ -10,9 +10,12 @@ interface TodoListProps {
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>) => void;
+  onAddSubtask: (todoId: string, title: string) => void;
+  onToggleSubtask: (todoId: string, subtaskId: string) => void;
+  onDeleteSubtask: (todoId: string, subtaskId: string) => void;
 }
 
-export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, onUpdate }: TodoListProps) {
+export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, onUpdate, onAddSubtask, onToggleSubtask, onDeleteSubtask }: TodoListProps) {
   const filteredTodos = useMemo(() => {
     let result = todos;
     
@@ -72,6 +75,9 @@ export function TodoList({ todos, filter, categoryFilter, onToggle, onDelete, on
             onToggle={onToggle}
             onDelete={onDelete}
             onUpdate={onUpdate}
+            onAddSubtask={onAddSubtask}
+            onToggleSubtask={onToggleSubtask}
+            onDeleteSubtask={onDeleteSubtask}
           />
         </div>
       ))}

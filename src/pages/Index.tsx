@@ -17,6 +17,9 @@ const Index = () => {
     toggleTodo,
     deleteTodo,
     updateTodo,
+    addSubtask,
+    toggleSubtask,
+    deleteSubtask,
     clearCompleted,
     completedCount,
     activeCount,
@@ -59,6 +62,9 @@ const Index = () => {
               onToggle={toggleTodo}
               onDelete={deleteTodo}
               onUpdate={updateTodo}
+              onAddSubtask={addSubtask}
+              onToggleSubtask={toggleSubtask}
+              onDeleteSubtask={deleteSubtask}
             />
           </main>
           
