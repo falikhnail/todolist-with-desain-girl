@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { format, isPast, isToday } from 'date-fns';
+import { useCompletionSound } from '@/hooks/useCompletionSound';
 
 interface TodoItemProps {
   todo: Todo;
@@ -28,6 +29,14 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
   const [showSubtasks, setShowSubtasks] = useState(true);
   const [newSubtask, setNewSubtask] = useState('');
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
+  const { playCompletionSound } = useCompletionSound();
+
+  const handleToggle = () => {
+    if (!todo.completed) {
+      playCompletionSound();
+    }
+    onToggle(todo.id);
+  };
 
   const handleSave = () => {
     if (editTitle.trim() && editTitle !== todo.title) {
@@ -47,6 +56,14 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
       setNewSubtask('');
       setIsAddingSubtask(false);
     }
+  };
+
+  const handleToggleSubtask = (subtaskId: string) => {
+    const subtask = todo.subtasks.find(st => st.id === subtaskId);
+    if (subtask && !subtask.completed) {
+      playCompletionSound();
+    }
+    onToggleSubtask(todo.id, subtaskId);
   };
 
   const getDueDateStatus = () => {
@@ -72,7 +89,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
     >
       <div className="flex items-start gap-4">
         <button
-          onClick={() => onToggle(todo.id)}
+          onClick={handleToggle}
           className={cn(
             'shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all mt-0.5',
             todo.completed
@@ -205,7 +222,7 @@ export function TodoItem({ todo, onToggle, onDelete, onUpdate, onAddSubtask, onT
               className="group/subtask flex items-center gap-3 p-2 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
             >
               <button
-                onClick={() => onToggleSubtask(todo.id, subtask.id)}
+                onClick={() => handleToggleSubtask(subtask.id)}
                 className={cn(
                   'shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all',
                   subtask.completed
