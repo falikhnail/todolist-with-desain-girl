@@ -1,4 +1,5 @@
 import { CheckCircle2, Sparkles } from 'lucide-react';
+import { DailyQuote } from './DailyQuote';
 
 interface TodoHeaderProps {
   activeCount: number;
@@ -27,9 +28,11 @@ export function TodoHeader({ activeCount, completedCount }: TodoHeaderProps) {
         <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">
           <span className="gradient-text">TaskFlow</span>
         </h1>
-        <p className="text-muted-foreground text-lg font-light">
+        <p className="text-muted-foreground text-lg font-light mb-4">
           ✨ Organize your day beautifully ✨
         </p>
+        
+        <DailyQuote />
       </div>
       
       {total > 0 && (
