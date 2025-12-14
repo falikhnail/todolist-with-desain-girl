@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTodos } from '@/hooks/useTodos';
+import { useReminders } from '@/hooks/useReminders';
 import { TodoHeader } from '@/components/todo/TodoHeader';
 import { AddTodoForm } from '@/components/todo/AddTodoForm';
 import { TodoFilters } from '@/components/todo/TodoFilters';
@@ -7,13 +8,15 @@ import { TodoList } from '@/components/todo/TodoList';
 import { StatsDashboard } from '@/components/todo/StatsDashboard';
 import { FilterType, Category } from '@/types/todo';
 import { Helmet } from 'react-helmet-async';
-import { Heart, BarChart3, ListTodo } from 'lucide-react';
+import { Heart, BarChart3, ListTodo, Bell } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [filter, setFilter] = useState<FilterType>('all');
   const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
-  const {
+const {
     todos,
     loading,
     addTodo,
@@ -27,6 +30,32 @@ const Index = () => {
     completedCount,
     activeCount,
   } = useTodos();
+
+  const { requestPermission } = useReminders(todos);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      setNotificationEnabled(Notification.permission === 'granted');
+    }
+  }, []);
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestPermission();
+    setNotificationEnabled(granted);
+    if (granted) {
+      toast({
+        title: "Notifikasi Aktif",
+        description: "Anda akan menerima reminder untuk task dengan deadline",
+      });
+    } else {
+      toast({
+        title: "Notifikasi Ditolak",
+        description: "Aktifkan notifikasi di pengaturan browser untuk menerima reminder",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -71,6 +100,16 @@ const Index = () => {
               </TabsList>
               
               <TabsContent value="tasks" className="mt-0">
+                {!notificationEnabled && (
+                  <div className="mb-4 p-3 bg-accent/50 rounded-xl flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Aktifkan notifikasi untuk reminder</span>
+                    <Button size="sm" variant="outline" onClick={handleEnableNotifications} className="gap-2">
+                      <Bell className="h-4 w-4" />
+                      Aktifkan
+                    </Button>
+                  </div>
+                )}
+                
                 <AddTodoForm onAdd={addTodo} />
                 
                 <TodoFilters
