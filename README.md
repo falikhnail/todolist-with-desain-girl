@@ -118,12 +118,6 @@ Project ini menggunakan Lovable Cloud (Supabase) yang sudah terkonfigurasi otoma
 | subtasks | JSON | Array subtasks |
 | created_at | TIMESTAMP | Waktu dibuat |
 
-## 🚀 Deployment
-
-Aplikasi dapat di-deploy melalui Lovable:
-1. Buka project di Lovable
-2. Klik tombol "Publish" di pojok kanan atas
-3. Pilih domain atau gunakan subdomain Lovable
 
 ## 📄 License
 
@@ -131,4 +125,4 @@ MIT License - Bebas digunakan untuk keperluan pribadi maupun komersial.
 
 ---
 
-**Made with ❤️ using [Lovable](https://lovable.dev)**
+**Made with ❤️
