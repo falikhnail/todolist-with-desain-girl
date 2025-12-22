@@ -1,73 +1,134 @@
-# Welcome to your Lovable project
+# ✅ TaskMaster - Todo App PWA
 
-## Project info
+Aplikasi manajemen tugas modern yang dapat diinstall sebagai Progressive Web App (PWA) dengan fitur reminder, statistik, dan notifikasi.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Fitur Utama
 
-## How can I edit this code?
+### 📝 Manajemen Tugas
+- **CRUD Tugas** - Tambah, edit, hapus, dan tandai tugas selesai
+- **Subtasks** - Pecah tugas besar menjadi subtask yang lebih kecil
+- **Prioritas** - Atur prioritas tugas (Low, Medium, High)
+- **Kategori** - Organisir tugas berdasarkan kategori (Work, Personal, Shopping, Health, Other)
+- **Due Date** - Set deadline untuk setiap tugas
 
-There are several ways of editing your application.
+### 🔔 Sistem Reminder
+- **Browser Notifications** - Notifikasi push langsung ke browser/device
+- **In-App Toast** - Notifikasi dalam aplikasi
+- **Sound Alert** - Suara pengingat
+- **Multi-timing** - Reminder 1 hari, 1 jam, 30 menit sebelum, dan saat deadline
 
-**Use Lovable**
+### 📊 Statistik & Dashboard
+- **Progress Tracking** - Lihat progress penyelesaian tugas
+- **Kategori Stats** - Statistik per kategori
+- **Completion Rate** - Persentase tugas selesai
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 📱 Progressive Web App (PWA)
+- **Installable** - Install langsung dari browser ke home screen
+- **Offline Support** - Tetap bisa diakses saat offline
+- **Native-like Experience** - Pengalaman seperti aplikasi native
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🎨 UI/UX
+- **Responsive Design** - Optimal di desktop dan mobile
+- **Filter & Search** - Filter berdasarkan status dan kategori
+- **Quote Harian** - Motivasi harian untuk produktivitas
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Backend**: Supabase (Database & Auth)
+- **State Management**: TanStack Query
+- **PWA**: vite-plugin-pwa
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 📦 Instalasi Development
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Masuk ke direktori project
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Jalankan development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## 📲 Cara Install PWA
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Android (Chrome)
+1. Buka aplikasi di browser Chrome
+2. Tap menu (⋮) di pojok kanan atas
+3. Pilih "Add to Home screen" atau "Install app"
+4. Konfirmasi instalasi
 
-**Use GitHub Codespaces**
+### iOS (Safari)
+1. Buka aplikasi di Safari
+2. Tap tombol Share (□↑)
+3. Scroll dan pilih "Add to Home Screen"
+4. Tap "Add" untuk konfirmasi
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Desktop (Chrome/Edge)
+1. Buka aplikasi di browser
+2. Klik icon install (⊕) di address bar
+3. Atau klik menu → "Install TaskMaster"
 
-## What technologies are used for this project?
+## 📁 Struktur Project
 
-This project is built with:
+```
+src/
+├── components/
+│   ├── todo/           # Komponen todo (TodoItem, TodoList, etc.)
+│   └── ui/             # shadcn/ui components
+├── hooks/
+│   ├── useTodos.ts     # Hook untuk CRUD todos
+│   ├── useReminders.ts # Hook untuk sistem reminder
+│   └── useCompletionEffects.ts # Efek saat task selesai
+├── pages/
+│   ├── Index.tsx       # Halaman utama
+│   ├── Install.tsx     # Panduan instalasi PWA
+│   └── NotFound.tsx    # 404 page
+├── types/
+│   └── todo.ts         # TypeScript types
+└── integrations/
+    └── supabase/       # Supabase client & types
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🔧 Environment Variables
 
-## How can I deploy this project?
+Project ini menggunakan Lovable Cloud (Supabase) yang sudah terkonfigurasi otomatis:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🗄️ Database Schema
 
-## Can I connect a custom domain to my Lovable project?
+### Tabel: `todos`
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| title | TEXT | Judul tugas |
+| completed | BOOLEAN | Status selesai |
+| priority | TEXT | Prioritas (low/medium/high) |
+| category | TEXT | Kategori tugas |
+| due_date | TIMESTAMP | Deadline tugas |
+| subtasks | JSON | Array subtasks |
+| created_at | TIMESTAMP | Waktu dibuat |
 
-Yes, you can!
+## 🚀 Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Aplikasi dapat di-deploy melalui Lovable:
+1. Buka project di Lovable
+2. Klik tombol "Publish" di pojok kanan atas
+3. Pilih domain atau gunakan subdomain Lovable
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+
+MIT License - Bebas digunakan untuk keperluan pribadi maupun komersial.
+
+---
+
+**Made with ❤️ using [Lovable](https://lovable.dev)**
