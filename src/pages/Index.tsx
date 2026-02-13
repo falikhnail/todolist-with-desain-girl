@@ -140,7 +140,7 @@ const {
               </TabsContent>
               
               <TabsContent value="calendar" className="mt-0">
-                <CalendarSchedule todos={todos} onToggle={toggleTodo} />
+                <CalendarSchedule todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} onUpdate={updateTodo} onAdd={addTodo} />
               </TabsContent>
               
               <TabsContent value="stats" className="mt-0">
