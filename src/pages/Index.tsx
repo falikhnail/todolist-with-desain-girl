@@ -6,9 +6,10 @@ import { AddTodoForm } from '@/components/todo/AddTodoForm';
 import { TodoFilters } from '@/components/todo/TodoFilters';
 import { TodoList } from '@/components/todo/TodoList';
 import { StatsDashboard } from '@/components/todo/StatsDashboard';
+import { CalendarSchedule } from '@/components/todo/CalendarSchedule';
 import { FilterType, Category } from '@/types/todo';
 import { Helmet } from 'react-helmet-async';
-import { Heart, BarChart3, ListTodo, Bell } from 'lucide-react';
+import { Heart, BarChart3, ListTodo, Bell, CalendarDays } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -88,10 +89,14 @@ const {
           
           <main className="glass-card rounded-3xl p-5 md:p-8">
             <Tabs defaultValue="tasks" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="tasks" className="flex items-center gap-2">
                   <ListTodo className="h-4 w-4" />
                   Tasks
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  Jadwal
                 </TabsTrigger>
                 <TabsTrigger value="stats" className="flex items-center gap-2">
                   <BarChart3 className="h-4 w-4" />
@@ -132,6 +137,10 @@ const {
                   onToggleSubtask={toggleSubtask}
                   onDeleteSubtask={deleteSubtask}
                 />
+              </TabsContent>
+              
+              <TabsContent value="calendar" className="mt-0">
+                <CalendarSchedule todos={todos} onToggle={toggleTodo} />
               </TabsContent>
               
               <TabsContent value="stats" className="mt-0">
